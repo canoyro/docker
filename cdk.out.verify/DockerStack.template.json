@@ -1,0 +1,626 @@
+{
+ "Resources": {
+  "DockerRouteTable": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "DockerStack-docker-route-table"
+     }
+    ],
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerRouteTable"
+   }
+  },
+  "DockerSubnetRouteTableAssociation": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DockerRouteTable"
+    },
+    "SubnetId": "subnet-0b77ebf87a51fd6ba"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerSubnetRouteTableAssociation"
+   }
+  },
+  "DockerManagerSg3C291827": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Docker Swarm manager security group",
+    "GroupName": "docker-manager-sg",
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/Resource"
+   }
+  },
+  "DockerManagerSgto00000ALLTRAFFIC9344AE92": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "Allow all outbound traffic by default",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "-1"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/to 0.0.0.0_0:ALL TRAFFIC"
+   }
+  },
+  "DockerManagerSgfrom000002212A171C3": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "SSH",
+    "FromPort": 22,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 22
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from 0.0.0.0_0:22"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer2377DC431F6E": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Swarm join from workers",
+    "FromPort": 2377,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 2377
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from {IndirectPeer}:2377"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer27946CD201FC0": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm TCP from workers",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer2}':7946"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer3UDP7946A523F77D": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm UDP from workers",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer3}':UDP 7946"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer4UDP4789EAD4072F": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Overlay network from workers",
+    "FromPort": 4789,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 4789
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer4}':UDP 4789"
+   }
+  },
+  "DockerWorkerSgB39708A9": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Docker Swarm worker security group",
+    "GroupName": "docker-worker-sg",
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/Resource"
+   }
+  },
+  "DockerWorkerSgto00000ALLTRAFFIC8B72E957": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "Allow all outbound traffic by default",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "-1"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/to 0.0.0.0_0:ALL TRAFFIC"
+   }
+  },
+  "DockerWorkerSgfrom000002266AE23D8": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "SSH",
+    "FromPort": 22,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 22
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from 0.0.0.0_0:22"
+   }
+  },
+  "DockerWorkerSgfromIndirectPeer794664965D55": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm TCP from manager",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from {IndirectPeer}:7946"
+   }
+  },
+  "DockerWorkerSgfromIndirectPeer2UDP7946C9BD3901": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm UDP from manager",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from '{IndirectPeer2}':UDP 7946"
+   }
+  },
+  "DockerWorkerSgfromIndirectPeer3UDP478938FC827F": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Overlay network from manager",
+    "FromPort": 4789,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 4789
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from '{IndirectPeer3}':UDP 4789"
+   }
+  },
+  "DockerWorkerSgfromIndirectPeer47946114510C9": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm TCP between workers",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from '{IndirectPeer4}':7946"
+   }
+  },
+  "DockerWorkerSgfromIndirectPeer5UDP794615AEB7F2": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm UDP between workers",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from '{IndirectPeer5}':UDP 7946"
+   }
+  },
+  "DockerWorkerSgfromIndirectPeer6UDP4789C5C0F489": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Overlay network between workers",
+    "FromPort": 4789,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 4789
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerSg/from '{IndirectPeer6}':UDP 4789"
+   }
+  },
+  "DockerInstanceRole50102B31": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerInstanceRole/Resource"
+   }
+  },
+  "DockerInstanceRoleDefaultPolicy87CEE1EF": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ssm:GetParameter",
+        "ssm:PutParameter"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:ap-southeast-2:581145854871:parameter/docker-swarm/DockerStack/worker-join-command"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DockerInstanceRoleDefaultPolicy87CEE1EF",
+    "Roles": [
+     {
+      "Ref": "DockerInstanceRole50102B31"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerInstanceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DockerSshKeyPair184B4ED0": {
+   "Type": "AWS::EC2::KeyPair",
+   "Properties": {
+    "KeyFormat": "pem",
+    "KeyName": "dockerstack-ssh-key",
+    "KeyType": "rsa"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerSshKeyPair/Resource"
+   }
+  },
+  "DockerManagerInstanceProfile40043755": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "DockerInstanceRole50102B31"
+     }
+    ]
+   },
+   "DependsOn": [
+    "DockerSshKeyPair184B4ED0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManager/InstanceProfile"
+   }
+  },
+  "DockerManager91866607": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "IamInstanceProfile": {
+     "Ref": "DockerManagerInstanceProfile40043755"
+    },
+    "ImageId": "ami-00bc7c3b699c3b815",
+    "InstanceType": "c7i-flex.large",
+    "KeyName": {
+     "Ref": "DockerSshKeyPair184B4ED0"
+    },
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DockerManagerSg3C291827",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": "subnet-0b77ebf87a51fd6ba",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "docker-swarm-manager"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nTOKEN=$(curl -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\")\nPRIVATE_IP=$(curl -H \"X-aws-ec2-metadata-token: $TOKEN\" http://169.254.169.254/latest/meta-data/local-ipv4)\ndocker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || docker swarm init --advertise-addr \"$PRIVATE_IP\"\nJOIN_TOKEN=$(docker swarm join-token worker -q)\naws ssm put-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/worker-join-command\" --type SecureString --overwrite --value \"docker swarm join --token $JOIN_TOKEN $PRIVATE_IP:2377\""
+    }
+   },
+   "DependsOn": [
+    "DockerInstanceRoleDefaultPolicy87CEE1EF",
+    "DockerInstanceRole50102B31",
+    "DockerSshKeyPair184B4ED0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManager/Resource"
+   }
+  },
+  "DockerWorkerInstanceProfile7E9ABC87": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "DockerInstanceRole50102B31"
+     }
+    ]
+   },
+   "DependsOn": [
+    "DockerManagerInstanceProfile40043755",
+    "DockerManager91866607",
+    "DockerSshKeyPair184B4ED0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorker/InstanceProfile"
+   }
+  },
+  "DockerWorker5D484657": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "IamInstanceProfile": {
+     "Ref": "DockerWorkerInstanceProfile7E9ABC87"
+    },
+    "ImageId": "ami-00bc7c3b699c3b815",
+    "InstanceType": "c7i-flex.large",
+    "KeyName": {
+     "Ref": "DockerSshKeyPair184B4ED0"
+    },
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DockerWorkerSgB39708A9",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": "subnet-0b77ebf87a51fd6ba",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "docker-swarm-worker"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nfor i in $(seq 1 60); do JOIN_COMMAND=$(aws ssm get-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/worker-join-command\" --with-decryption --query Parameter.Value --output text 2>/dev/null) && break; sleep 10; done\ntest -n \"${JOIN_COMMAND:-}\"\ndocker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || $JOIN_COMMAND"
+    }
+   },
+   "DependsOn": [
+    "DockerInstanceRoleDefaultPolicy87CEE1EF",
+    "DockerInstanceRole50102B31",
+    "DockerManagerInstanceProfile40043755",
+    "DockerManager91866607",
+    "DockerSshKeyPair184B4ED0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorker/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+1VTYvbMBD9LatjUdxt6ELJzV2WYgrd4ORmlqJIk6w28sjVR4IR/u9Fsp14m+2thy7kYCy9p3nz4dF4ns3vvmS3N+xoZ1zsZ0pusrByjO9pCVZ7w6EiHwh943mi7Gh/BuDzLNxvsdTewZptFND7La78BsGdsdxazSVzUiNdAfdGuvab0b6pAjk0nCySqJ0yP1gNAy7AciObaD0gTCl9zJV69G6jPQqycMYDJULa6K5AJRFKr8D2TEcDYUIUuDNgbSTIogqEMzwfHTW4RgQendnBm0f5y0Mh0rajoUv5XzX/vea1F66a70rzKU27aa9eAA/J3wU8xEG/Q7tk0lSh1xq2tEDrGHKoApHDcnILzvfk0PB+2FqyCMSOy6rP+GS7bpvRtmb8WSIUNdvBW5dtwIxWI73vYxpT/88CSmUby9VRyeoslFrFyjFrfQ3iaxtDaYxELhumcs61RzeOj3QmGuT8NFW6GBWyHYilVpLLODuq8AprczOcHTtrrXsiHp2Co98L1jnGn/vmO3GnTv0rmfKN8dIeTz/o0WCty1SmP3QuYSFWjjmoAdPXiSEl4V5zWtKl0VupoOsi+Ohd411HUQvIXuzHw/xz9ukuu715sVLOjEcna8jK/v0bAx/Wll4IAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DockerManagerPrivateIp": {
+   "Description": "Docker Swarm Manager private IP",
+   "Value": {
+    "Fn::GetAtt": [
+     "DockerManager91866607",
+     "PrivateIp"
+    ]
+   }
+  },
+  "DockerWorkerPrivateIp": {
+   "Description": "Docker Swarm Worker private IP",
+   "Value": {
+    "Fn::GetAtt": [
+     "DockerWorker5D484657",
+     "PrivateIp"
+    ]
+   }
+  },
+  "DockerSshKeyPairName": {
+   "Description": "SSH key pair name for Docker Swarm EC2 instances",
+   "Value": {
+    "Ref": "DockerSshKeyPair184B4ED0"
+   }
+  },
+  "DockerWorkerJoinCommandParameterName": {
+   "Description": "SSM SecureString parameter containing the Docker Swarm worker join command",
+   "Value": "/docker-swarm/DockerStack/worker-join-command"
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

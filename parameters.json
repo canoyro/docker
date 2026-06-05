@@ -1,4 +1,6 @@
 {
   "vpcId": "vpc-04571bb185086fe7f",
-  "subnetId": "subnet-0b77ebf87a51fd6ba"
+  "subnetId": "subnet-0b77ebf87a51fd6ba",
+  "availabilityZone": "ap-southeast-2a",
+  "amiId": "ami-00bc7c3b699c3b815"
 }
