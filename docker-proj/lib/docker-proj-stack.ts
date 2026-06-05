@@ -21,25 +21,48 @@ export class DockerStack extends cdk.Stack {
 
     const subnet = ec2.Subnet.fromSubnetId(this, 'DockerSubnet', params.subnetId);
 
-    const dockerSg = new ec2.SecurityGroup(this, 'DockerSwarmSg', {
+    // Manager security group
+    const managerSg = new ec2.SecurityGroup(this, 'DockerManagerSg', {
       vpc,
-      securityGroupName: 'docker-swarm-sg',
-      description: 'Docker Swarm security group',
+      securityGroupName: 'docker-manager-sg',
+      description: 'Docker Swarm manager security group',
       allowAllOutbound: true,
     });
 
-    // SSH
-    dockerSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), 'SSH');
-    // Swarm cluster management (manager only)
-    dockerSg.addIngressRule(ec2.Peer.securityGroupId(dockerSg.securityGroupId), ec2.Port.tcp(2377), 'Swarm management');
-    // Node-to-node communication
-    dockerSg.addIngressRule(ec2.Peer.securityGroupId(dockerSg.securityGroupId), ec2.Port.tcp(7946), 'Node comm TCP');
-    dockerSg.addIngressRule(ec2.Peer.securityGroupId(dockerSg.securityGroupId), ec2.Port.udp(7946), 'Node comm UDP');
-    // Overlay network
-    dockerSg.addIngressRule(ec2.Peer.securityGroupId(dockerSg.securityGroupId), ec2.Port.udp(4789), 'Overlay network');
+    // Worker security group
+    const workerSg = new ec2.SecurityGroup(this, 'DockerWorkerSg', {
+      vpc,
+      securityGroupName: 'docker-worker-sg',
+      description: 'Docker Swarm worker security group',
+      allowAllOutbound: true,
+    });
 
-    const ami = ec2.MachineImage.latestAmazonLinux2023();
-    const instanceType = ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO);
+    // --- Manager ingress rules ---
+    managerSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), 'SSH');
+    // Workers join the swarm via manager on 2377
+    managerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.tcp(2377), 'Swarm join from workers');
+    // Node-to-node communication from workers
+    managerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.tcp(7946), 'Node comm TCP from workers');
+    managerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.udp(7946), 'Node comm UDP from workers');
+    // Overlay network from workers
+    managerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.udp(4789), 'Overlay network from workers');
+
+    // --- Worker ingress rules ---
+    workerSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), 'SSH');
+    // Node-to-node communication from manager
+    workerSg.addIngressRule(ec2.Peer.securityGroupId(managerSg.securityGroupId), ec2.Port.tcp(7946), 'Node comm TCP from manager');
+    workerSg.addIngressRule(ec2.Peer.securityGroupId(managerSg.securityGroupId), ec2.Port.udp(7946), 'Node comm UDP from manager');
+    // Overlay network from manager
+    workerSg.addIngressRule(ec2.Peer.securityGroupId(managerSg.securityGroupId), ec2.Port.udp(4789), 'Overlay network from manager');
+    // Worker-to-worker communication for overlay networking
+    workerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.tcp(7946), 'Node comm TCP between workers');
+    workerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.udp(7946), 'Node comm UDP between workers');
+    workerSg.addIngressRule(ec2.Peer.securityGroupId(workerSg.securityGroupId), ec2.Port.udp(4789), 'Overlay network between workers');
+
+    const ami = ec2.MachineImage.fromSsmParameter(
+      '/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id'
+    );
+    const instanceType = ec2.InstanceType.of(ec2.InstanceClass.T3A, ec2.InstanceSize.LARGE);
     const vpcSubnets = { subnets: [subnet] };
 
     const dockerManager = new ec2.Instance(this, 'DockerManager', {
@@ -48,7 +71,7 @@ export class DockerStack extends cdk.Stack {
       vpcSubnets,
       instanceType,
       machineImage: ami,
-      securityGroup: dockerSg,
+      securityGroup: managerSg,
       associatePublicIpAddress: true,
     });
 
@@ -58,7 +81,7 @@ export class DockerStack extends cdk.Stack {
       vpcSubnets,
       instanceType,
       machineImage: ami,
-      securityGroup: dockerSg,
+      securityGroup: workerSg,
       associatePublicIpAddress: true,
     });
 
