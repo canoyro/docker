@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import * as cr from 'aws-cdk-lib/custom-resources';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as fs from 'fs';
@@ -247,6 +248,18 @@ export class DockerStack extends cdk.Stack {
       format: ec2.KeyPairFormat.PEM,
       type: ec2.KeyPairType.RSA,
     });
+    const internalApiRepository = new ecr.Repository(this, 'DockerInternalApiRepository', {
+      repositoryName: 'internal-file-api',
+      imageScanOnPush: true,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      lifecycleRules: [
+        {
+          description: 'Expire untagged images after 7 days',
+          tagStatus: ecr.TagStatus.UNTAGGED,
+          maxImageAge: cdk.Duration.days(7),
+        },
+      ],
+    });
 
     const addDockerHealthCheck = (userData: ec2.UserData) => {
       userData.addCommands(
@@ -461,6 +474,11 @@ export class DockerStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'DockerManagerJoinCommandParameterName', {
       value: managerJoinCommandParameterName,
       description: 'SSM SecureString parameter containing the Docker Swarm manager join command',
+    });
+
+    new cdk.CfnOutput(this, 'DockerInternalApiRepositoryUri', {
+      value: internalApiRepository.repositoryUri,
+      description: 'ECR repository URI for the internal file API image',
     });
   }
 }
