@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   internal-file-api:
-    image: internal-file-api:local
+    image: 581145854871.dkr.ecr.ap-southeast-2.amazonaws.com/internal-file-api:latest
     ports:
       - target: 8080
         published: 8080
