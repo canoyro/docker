@@ -175,7 +175,26 @@ export class DockerStack extends cdk.Stack {
       privateDnsEnabled: true,
     });
     cdk.Tags.of(ssmMessagesEndpoint).add('Name', `${cdk.Stack.of(this).stackName}-ssmmessages-endpoint`);
-    [ssmEndpoint, ec2MessagesEndpoint, ssmMessagesEndpoint].forEach((endpoint) => {
+    const ecrApiEndpoint = vpc.addInterfaceEndpoint('DockerEcrApiEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.ECR,
+      subnets: vpcSubnets,
+      securityGroups: [endpointSg],
+      privateDnsEnabled: true,
+    });
+    cdk.Tags.of(ecrApiEndpoint).add('Name', `${cdk.Stack.of(this).stackName}-ecr-api-endpoint`);
+    const ecrDockerEndpoint = vpc.addInterfaceEndpoint('DockerEcrDockerEndpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.ECR_DOCKER,
+      subnets: vpcSubnets,
+      securityGroups: [endpointSg],
+      privateDnsEnabled: true,
+    });
+    cdk.Tags.of(ecrDockerEndpoint).add('Name', `${cdk.Stack.of(this).stackName}-ecr-docker-endpoint`);
+    const s3Endpoint = vpc.addGatewayEndpoint('DockerS3Endpoint', {
+      service: ec2.GatewayVpcEndpointAwsService.S3,
+      subnets: [vpcSubnets],
+    });
+    cdk.Tags.of(s3Endpoint).add('Name', `${cdk.Stack.of(this).stackName}-s3-gateway-endpoint`);
+    [ssmEndpoint, ec2MessagesEndpoint, ssmMessagesEndpoint, ecrApiEndpoint, ecrDockerEndpoint].forEach((endpoint) => {
       endpoint.node.addDependency(enableVpcDnsSupport);
       endpoint.node.addDependency(enableVpcDnsHostnames);
     });
@@ -196,6 +215,28 @@ export class DockerStack extends cdk.Stack {
         }),
       ],
     }));
+    instanceRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['ecr:GetAuthorizationToken'],
+      resources: ['*'],
+    }));
+    instanceRole.addToPolicy(new iam.PolicyStatement({
+      actions: [
+        'ecr:BatchCheckLayerAvailability',
+        'ecr:BatchGetImage',
+        'ecr:GetDownloadUrlForLayer',
+      ],
+      resources: [
+        cdk.Stack.of(this).formatArn({
+          service: 'ecr',
+          resource: 'repository',
+          resourceName: '*',
+        }),
+      ],
+    }));
+    instanceRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['autoscaling:SetInstanceHealth'],
+      resources: ['*'],
+    }));
 
     const ami = ec2.MachineImage.genericLinux({
       [cdk.Stack.of(this).region]: params.amiId,
@@ -207,23 +248,131 @@ export class DockerStack extends cdk.Stack {
       type: ec2.KeyPairType.RSA,
     });
 
+    const addDockerHealthCheck = (userData: ec2.UserData) => {
+      userData.addCommands(
+        'cat > /usr/local/bin/docker-asg-healthcheck.sh <<\'EOF\'',
+        '#!/bin/bash',
+        'set -u',
+        'FAIL_DIR=/var/lib/docker-asg-healthcheck',
+        'FAIL_FILE="$FAIL_DIR/failures"',
+        'mkdir -p "$FAIL_DIR"',
+        'if systemctl is-active --quiet docker && timeout 10 docker info >/dev/null 2>&1; then',
+        '  echo 0 > "$FAIL_FILE"',
+        '  exit 0',
+        'fi',
+        'FAILURES=0',
+        'if [ -f "$FAIL_FILE" ]; then',
+        '  FAILURES=$(cat "$FAIL_FILE" 2>/dev/null || echo 0)',
+        'fi',
+        'FAILURES=$((FAILURES + 1))',
+        'echo "$FAILURES" > "$FAIL_FILE"',
+        'if [ "$FAILURES" -lt 3 ]; then',
+        '  exit 0',
+        'fi',
+        'TOKEN=$(curl -fsS -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")',
+        'INSTANCE_ID=$(curl -fsS -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)',
+        'aws autoscaling set-instance-health --region "$AWS_REGION" --instance-id "$INSTANCE_ID" --health-status Unhealthy --should-respect-grace-period',
+        'EOF',
+        'chmod +x /usr/local/bin/docker-asg-healthcheck.sh',
+        'cat > /etc/systemd/system/docker-asg-healthcheck.service <<EOF',
+        '[Unit]',
+        'Description=Report unhealthy Docker instances to Auto Scaling',
+        '',
+        '[Service]',
+        'Type=oneshot',
+        `Environment=AWS_REGION=${cdk.Stack.of(this).region}`,
+        'ExecStart=/usr/local/bin/docker-asg-healthcheck.sh',
+        'EOF',
+        'cat > /etc/systemd/system/docker-asg-healthcheck.timer <<\'EOF\'',
+        '[Unit]',
+        'Description=Run Docker ASG health check',
+        '',
+        '[Timer]',
+        'OnBootSec=5min',
+        'OnUnitActiveSec=1min',
+        'Unit=docker-asg-healthcheck.service',
+        '',
+        '[Install]',
+        'WantedBy=timers.target',
+        'EOF',
+        'systemctl daemon-reload',
+        'systemctl enable --now docker-asg-healthcheck.timer',
+      );
+    };
+
+    const addManagerSsmRefresh = (userData: ec2.UserData) => {
+      userData.addCommands(
+        'cat > /usr/local/bin/docker-manager-ssm-refresh.sh <<\'EOF\'',
+        '#!/bin/bash',
+        'set -euo pipefail',
+        'docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$"',
+        'docker info --format "{{.Swarm.ControlAvailable}}" | grep -q "^true$"',
+        'TOKEN=$(curl -fsS -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")',
+        'PRIVATE_IP=$(curl -fsS -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)',
+        'MANAGER_TOKEN=$(docker swarm join-token manager -q)',
+        'WORKER_TOKEN=$(docker swarm join-token worker -q)',
+        `aws ssm put-parameter --region "$AWS_REGION" --name "${bootstrapManagerIpParameterName}" --type String --overwrite --value "$PRIVATE_IP"`,
+        `aws ssm put-parameter --region "$AWS_REGION" --name "${managerJoinCommandParameterName}" --type SecureString --overwrite --value "docker swarm join --token $MANAGER_TOKEN $PRIVATE_IP:2377"`,
+        `aws ssm put-parameter --region "$AWS_REGION" --name "${workerJoinCommandParameterName}" --type SecureString --overwrite --value "docker swarm join --token $WORKER_TOKEN $PRIVATE_IP:2377"`,
+        'EOF',
+        'chmod +x /usr/local/bin/docker-manager-ssm-refresh.sh',
+        'cat > /etc/systemd/system/docker-manager-ssm-refresh.service <<EOF',
+        '[Unit]',
+        'Description=Publish Docker Swarm manager join parameters to SSM',
+        '',
+        '[Service]',
+        'Type=oneshot',
+        `Environment=AWS_REGION=${cdk.Stack.of(this).region}`,
+        'ExecStart=/usr/local/bin/docker-manager-ssm-refresh.sh',
+        'EOF',
+        'cat > /etc/systemd/system/docker-manager-ssm-refresh.timer <<\'EOF\'',
+        '[Unit]',
+        'Description=Run Docker Swarm manager SSM refresh',
+        '',
+        '[Timer]',
+        'OnBootSec=1min',
+        'OnUnitActiveSec=1min',
+        'Unit=docker-manager-ssm-refresh.service',
+        '',
+        '[Install]',
+        'WantedBy=timers.target',
+        'EOF',
+        'systemctl daemon-reload',
+        'systemctl enable --now docker-manager-ssm-refresh.timer',
+        '/usr/local/bin/docker-manager-ssm-refresh.sh || true',
+      );
+    };
+
     const managerUserData = ec2.UserData.forLinux();
     managerUserData.addCommands(
       'set -euxo pipefail',
       'TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")',
       'PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)',
-      `if aws ssm put-parameter --region ${cdk.Stack.of(this).region} --name "${bootstrapManagerIpParameterName}" --type String --value "$PRIVATE_IP" --no-overwrite; then`,
-      '  docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$" || docker swarm init --advertise-addr "$PRIVATE_IP"',
+      'publish_swarm_params() {',
       '  MANAGER_TOKEN=$(docker swarm join-token manager -q)',
       '  WORKER_TOKEN=$(docker swarm join-token worker -q)',
+      `  aws ssm put-parameter --region ${cdk.Stack.of(this).region} --name "${bootstrapManagerIpParameterName}" --type String --overwrite --value "$PRIVATE_IP"`,
       `  aws ssm put-parameter --region ${cdk.Stack.of(this).region} --name "${managerJoinCommandParameterName}" --type SecureString --overwrite --value "docker swarm join --token $MANAGER_TOKEN $PRIVATE_IP:2377"`,
       `  aws ssm put-parameter --region ${cdk.Stack.of(this).region} --name "${workerJoinCommandParameterName}" --type SecureString --overwrite --value "docker swarm join --token $WORKER_TOKEN $PRIVATE_IP:2377"`,
+      '}',
+      'init_swarm() {',
+      '  docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$" || docker swarm init --advertise-addr "$PRIVATE_IP"',
+      '  publish_swarm_params',
+      '}',
+      `if aws ssm put-parameter --region ${cdk.Stack.of(this).region} --name "${bootstrapManagerIpParameterName}" --type String --value "$PRIVATE_IP" --no-overwrite; then`,
+      '  init_swarm',
       'else',
       `  for i in $(seq 1 60); do MANAGER_JOIN_COMMAND=$(aws ssm get-parameter --region ${cdk.Stack.of(this).region} --name "${managerJoinCommandParameterName}" --with-decryption --query Parameter.Value --output text 2>/dev/null) && break; sleep 10; done`,
-      '  test -n "${MANAGER_JOIN_COMMAND:-}"',
-      '  docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$" || $MANAGER_JOIN_COMMAND',
+      '  if [ -n "${MANAGER_JOIN_COMMAND:-}" ]; then',
+      '    docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$" || $MANAGER_JOIN_COMMAND || init_swarm',
+      '  else',
+      '    init_swarm',
+      '  fi',
       'fi',
+      'docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$" && publish_swarm_params',
     );
+    addManagerSsmRefresh(managerUserData);
+    addDockerHealthCheck(managerUserData);
 
     const dockerManagerAsg = new autoscaling.AutoScalingGroup(this, 'DockerManagerAsg', {
       vpc,
@@ -234,11 +383,22 @@ export class DockerStack extends cdk.Stack {
       role: instanceRole,
       keyPair: sshKeyPair,
       userData: managerUserData,
-      minCapacity: 1,
-      maxCapacity: 2,
-      desiredCapacity: 1,
+      minCapacity: 3,
+      maxCapacity: 4,
+      healthChecks: autoscaling.HealthChecks.ec2({
+        gracePeriod: cdk.Duration.minutes(5),
+      }),
+      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({
+        maxBatchSize: 1,
+        minInstancesInService: 2,
+        waitOnResourceSignals: false,
+      }),
     });
     dockerManagerAsg.node.addDependency(sshKeyPair);
+    dockerManagerAsg.scaleOnCpuUtilization('DockerManagerCpuScaling', {
+      targetUtilizationPercent: 60,
+      cooldown: cdk.Duration.minutes(5),
+    });
     cdk.Tags.of(dockerManagerAsg).add('Name', 'docker-swarm-manager');
 
     const workerUserData = ec2.UserData.forLinux();
@@ -248,6 +408,7 @@ export class DockerStack extends cdk.Stack {
       'test -n "${JOIN_COMMAND:-}"',
       'docker info --format "{{.Swarm.LocalNodeState}}" | grep -q "^active$" || $JOIN_COMMAND',
     );
+    addDockerHealthCheck(workerUserData);
 
     const dockerWorkerAsg = new autoscaling.AutoScalingGroup(this, 'DockerWorkerAsg', {
       vpc,
@@ -259,11 +420,22 @@ export class DockerStack extends cdk.Stack {
       keyPair: sshKeyPair,
       userData: workerUserData,
       minCapacity: 2,
-      maxCapacity: 2,
-      desiredCapacity: 2,
+      maxCapacity: 4,
+      healthChecks: autoscaling.HealthChecks.ec2({
+        gracePeriod: cdk.Duration.minutes(5),
+      }),
+      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({
+        maxBatchSize: 1,
+        minInstancesInService: 1,
+        waitOnResourceSignals: false,
+      }),
     });
     dockerWorkerAsg.node.addDependency(sshKeyPair);
     dockerWorkerAsg.node.addDependency(dockerManagerAsg);
+    dockerWorkerAsg.scaleOnCpuUtilization('DockerWorkerCpuScaling', {
+      targetUtilizationPercent: 60,
+      cooldown: cdk.Duration.minutes(5),
+    });
     cdk.Tags.of(dockerWorkerAsg).add('Name', 'docker-swarm-worker');
 
     new cdk.CfnOutput(this, 'DockerManagerAsgName', {
