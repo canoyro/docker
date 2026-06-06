@@ -1,0 +1,14 @@
+node_modules/
+cdk.out/
+cdk.out.verify/
+
+*.js
+*.d.ts
+!jest.config.js
+
+.DS_Store
+.env
+*.pem
+*.key
+*.tar
+*.tar.gz
