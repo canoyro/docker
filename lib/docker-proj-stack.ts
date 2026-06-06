@@ -446,7 +446,7 @@ export class DockerStack extends cdk.Stack {
     dockerWorkerAsg.node.addDependency(sshKeyPair);
     dockerWorkerAsg.node.addDependency(dockerManagerAsg);
     dockerWorkerAsg.scaleOnCpuUtilization('DockerWorkerCpuScaling', {
-      targetUtilizationPercent: 60,
+      targetUtilizationPercent: 40,
       cooldown: cdk.Duration.minutes(5),
     });
     cdk.Tags.of(dockerWorkerAsg).add('Name', 'docker-swarm-worker');
