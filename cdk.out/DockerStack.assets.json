@@ -16,16 +16,16 @@
         }
       }
     },
-    "738ffd141aad833d9412ed43fde11befe5d61e126898568241afb54c420380e1": {
+    "a1f9f1dd3037446fdb46db7bd07c4079d34ec4ad665f79d04a3e81c8724fac9c": {
       "displayName": "DockerStack Template",
       "source": {
         "path": "DockerStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "581145854871-ap-southeast-2-27e9612a": {
+        "581145854871-ap-southeast-2-5da839bc": {
           "bucketName": "cdk-hnb659fds-assets-581145854871-ap-southeast-2",
-          "objectKey": "738ffd141aad833d9412ed43fde11befe5d61e126898568241afb54c420380e1.json",
+          "objectKey": "a1f9f1dd3037446fdb46db7bd07c4079d34ec4ad665f79d04a3e81c8724fac9c.json",
           "region": "ap-southeast-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::581145854871:role/cdk-hnb659fds-file-publishing-role-581145854871-ap-southeast-2"
         }
