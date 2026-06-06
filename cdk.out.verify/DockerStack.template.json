@@ -1,5 +1,110 @@
 {
  "Resources": {
+  "DockerVpcDockerSsmEndpointC9E17E2D": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DockerVpcEndpointSg089DC24A",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-southeast-2.ssm",
+    "SubnetIds": [
+     "subnet-0b77ebf87a51fd6ba"
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "DockerStack-ssm-endpoint"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "DependsOn": [
+    "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78",
+    "EnableDockerVpcDnsHostnames66686B09",
+    "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72",
+    "EnableDockerVpcDnsSupport86A69C18"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpc/DockerSsmEndpoint/Resource"
+   }
+  },
+  "DockerVpcDockerEc2MessagesEndpointF0186251": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DockerVpcEndpointSg089DC24A",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-southeast-2.ec2messages",
+    "SubnetIds": [
+     "subnet-0b77ebf87a51fd6ba"
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "DockerStack-ec2messages-endpoint"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "DependsOn": [
+    "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78",
+    "EnableDockerVpcDnsHostnames66686B09",
+    "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72",
+    "EnableDockerVpcDnsSupport86A69C18"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpc/DockerEc2MessagesEndpoint/Resource"
+   }
+  },
+  "DockerVpcDockerSsmMessagesEndpoint73900AAE": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DockerVpcEndpointSg089DC24A",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-southeast-2.ssmmessages",
+    "SubnetIds": [
+     "subnet-0b77ebf87a51fd6ba"
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "DockerStack-ssmmessages-endpoint"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "DependsOn": [
+    "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78",
+    "EnableDockerVpcDnsHostnames66686B09",
+    "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72",
+    "EnableDockerVpcDnsSupport86A69C18"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpc/DockerSsmMessagesEndpoint/Resource"
+   }
+  },
   "DockerRouteTable": {
    "Type": "AWS::EC2::RouteTable",
    "Properties": {
@@ -98,7 +203,103 @@
     "aws:cdk:path": "DockerStack/DockerManagerSg/from {IndirectPeer}:2377"
    }
   },
-  "DockerManagerSgfromIndirectPeer27946CD201FC0": {
+  "DockerManagerSgfromIndirectPeer2237764CDCE5E": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Swarm manager join and control plane",
+    "FromPort": 2377,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 2377
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer2}':2377"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer379465E2DCEA2": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm TCP between managers",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer3}':7946"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer4UDP79469683741F": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Node comm UDP between managers",
+    "FromPort": 7946,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 7946
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer4}':UDP 7946"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer5UDP4789852C10DF": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Overlay network between managers",
+    "FromPort": 4789,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "udp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 4789
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer5}':UDP 4789"
+   }
+  },
+  "DockerManagerSgfromIndirectPeer6794614798687": {
    "Type": "AWS::EC2::SecurityGroupIngress",
    "Properties": {
     "Description": "Node comm TCP from workers",
@@ -119,10 +320,10 @@
     "ToPort": 7946
    },
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer2}':7946"
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer6}':7946"
    }
   },
-  "DockerManagerSgfromIndirectPeer3UDP7946A523F77D": {
+  "DockerManagerSgfromIndirectPeer7UDP79464664A802": {
    "Type": "AWS::EC2::SecurityGroupIngress",
    "Properties": {
     "Description": "Node comm UDP from workers",
@@ -143,10 +344,10 @@
     "ToPort": 7946
    },
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer3}':UDP 7946"
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer7}':UDP 7946"
    }
   },
-  "DockerManagerSgfromIndirectPeer4UDP4789EAD4072F": {
+  "DockerManagerSgfromIndirectPeer8UDP4789568E3E7B": {
    "Type": "AWS::EC2::SecurityGroupIngress",
    "Properties": {
     "Description": "Overlay network from workers",
@@ -167,7 +368,7 @@
     "ToPort": 4789
    },
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer4}':UDP 4789"
+    "aws:cdk:path": "DockerStack/DockerManagerSg/from '{IndirectPeer8}':UDP 4789"
    }
   },
   "DockerWorkerSgB39708A9": {
@@ -361,6 +562,276 @@
     "aws:cdk:path": "DockerStack/DockerWorkerSg/from '{IndirectPeer6}':UDP 4789"
    }
   },
+  "DockerVpcEndpointSg089DC24A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "VPC endpoint security group for Docker Swarm private instances",
+    "GroupName": "docker-vpc-endpoint-sg",
+    "VpcId": "vpc-04571bb185086fe7f"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpcEndpointSg/Resource"
+   }
+  },
+  "DockerVpcEndpointSgto00000ALLTRAFFICA0C76ED6": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "Allow all outbound traffic by default",
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerVpcEndpointSg089DC24A",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "-1"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpcEndpointSg/to 0.0.0.0_0:ALL TRAFFIC"
+   }
+  },
+  "DockerVpcEndpointSgfromDockerStackDockerManagerSg75443DCA4432D0FA395": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "HTTPS from Docker managers",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerVpcEndpointSg089DC24A",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerManagerSg3C291827",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpcEndpointSg/from DockerStackDockerManagerSg75443DCA:443"
+   }
+  },
+  "DockerVpcEndpointSgfromDockerStackDockerWorkerSg467302DE443C6D5A197": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "HTTPS from Docker workers",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerVpcEndpointSg089DC24A",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DockerWorkerSgB39708A9",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpcEndpointSg/from DockerStackDockerWorkerSg467302DE:443"
+   }
+  },
+  "DockerVpcEndpointSgfrom1000016443304D9375": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "CidrIp": "10.0.0.0/16",
+    "Description": "from 10.0.0.0/16:443",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "DockerVpcEndpointSg089DC24A",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerVpcEndpointSg/from 10.0.0.0_16:443"
+   }
+  },
+  "EnableDockerVpcDnsSupport86A69C18": {
+   "Type": "Custom::AWS",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+      "Arn"
+     ]
+    },
+    "Create": "{\"service\":\"EC2\",\"action\":\"modifyVpcAttribute\",\"parameters\":{\"VpcId\":\"vpc-04571bb185086fe7f\",\"EnableDnsSupport\":{\"Value\":true}},\"physicalResourceId\":{\"id\":\"vpc-04571bb185086fe7f-dns-support\"}}",
+    "Update": "{\"service\":\"EC2\",\"action\":\"modifyVpcAttribute\",\"parameters\":{\"VpcId\":\"vpc-04571bb185086fe7f\",\"EnableDnsSupport\":{\"Value\":true}},\"physicalResourceId\":{\"id\":\"vpc-04571bb185086fe7f-dns-support\"}}",
+    "InstallLatestAwsSdk": false
+   },
+   "DependsOn": [
+    "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/EnableDockerVpcDnsSupport/Resource/Default"
+   }
+  },
+  "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "ec2:ModifyVpcAttribute",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72",
+    "Roles": [
+     {
+      "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/EnableDockerVpcDnsSupport/CustomResourcePolicy/Resource"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-581145854871-ap-southeast-2",
+     "S3Key": "8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0f.zip"
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Timeout": 120
+   },
+   "DependsOn": [
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/AWS679f53fac002430cb0da5b7982bd2287/Resource",
+    "aws:asset:path": "asset.8b1c21efe0e24332f92ed71e98107d8a27ee1544c62b7b191805e0913fcfdf0f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd2287LogGroup449FB7C2": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 731
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/AWS679f53fac002430cb0da5b7982bd2287/LogGroup/Resource"
+   }
+  },
+  "EnableDockerVpcDnsHostnames66686B09": {
+   "Type": "Custom::AWS",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+      "Arn"
+     ]
+    },
+    "Create": "{\"service\":\"EC2\",\"action\":\"modifyVpcAttribute\",\"parameters\":{\"VpcId\":\"vpc-04571bb185086fe7f\",\"EnableDnsHostnames\":{\"Value\":true}},\"physicalResourceId\":{\"id\":\"vpc-04571bb185086fe7f-dns-hostnames\"}}",
+    "Update": "{\"service\":\"EC2\",\"action\":\"modifyVpcAttribute\",\"parameters\":{\"VpcId\":\"vpc-04571bb185086fe7f\",\"EnableDnsHostnames\":{\"Value\":true}},\"physicalResourceId\":{\"id\":\"vpc-04571bb185086fe7f-dns-hostnames\"}}",
+    "InstallLatestAwsSdk": false
+   },
+   "DependsOn": [
+    "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/EnableDockerVpcDnsHostnames/Resource/Default"
+   }
+  },
+  "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "ec2:ModifyVpcAttribute",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78",
+    "Roles": [
+     {
+      "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/EnableDockerVpcDnsHostnames/CustomResourcePolicy/Resource"
+   }
+  },
   "DockerInstanceRole50102B31": {
    "Type": "AWS::IAM::Role",
    "Properties": {
@@ -406,7 +877,7 @@
         "ssm:PutParameter"
        ],
        "Effect": "Allow",
-       "Resource": "arn:aws:ssm:ap-southeast-2:581145854871:parameter/docker-swarm/DockerStack/worker-join-command"
+       "Resource": "arn:aws:ssm:ap-southeast-2:581145854871:parameter/docker-swarm/DockerStack/*"
       }
      ],
      "Version": "2012-10-17"
@@ -433,7 +904,7 @@
     "aws:cdk:path": "DockerStack/DockerSshKeyPair/Resource"
    }
   },
-  "DockerManagerInstanceProfile40043755": {
+  "DockerManagerAsgInstanceProfileC970F78F": {
    "Type": "AWS::IAM::InstanceProfile",
    "Properties": {
     "Roles": [
@@ -446,50 +917,123 @@
     "DockerSshKeyPair184B4ED0"
    ],
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerManager/InstanceProfile"
+    "aws:cdk:path": "DockerStack/DockerManagerAsg/InstanceProfile"
    }
   },
-  "DockerManager91866607": {
-   "Type": "AWS::EC2::Instance",
+  "DockerManagerAsgLaunchTemplateF43E2C27": {
+   "Type": "AWS::EC2::LaunchTemplate",
    "Properties": {
-    "AvailabilityZone": "ap-southeast-2a",
-    "IamInstanceProfile": {
-     "Ref": "DockerManagerInstanceProfile40043755"
+    "LaunchTemplateData": {
+     "IamInstanceProfile": {
+      "Arn": {
+       "Fn::GetAtt": [
+        "DockerManagerAsgInstanceProfileC970F78F",
+        "Arn"
+       ]
+      }
+     },
+     "ImageId": "ami-0df089799295556f3",
+     "InstanceType": "c7i-flex.large",
+     "KeyName": {
+      "Ref": "DockerSshKeyPair184B4ED0"
+     },
+     "Monitoring": {
+      "Enabled": false
+     },
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "DockerManagerSg3C291827",
+        "GroupId"
+       ]
+      }
+     ],
+     "TagSpecifications": [
+      {
+       "ResourceType": "instance",
+       "Tags": [
+        {
+         "Key": "Name",
+         "Value": "DockerStack/DockerManagerAsg/LaunchTemplate"
+        }
+       ]
+      },
+      {
+       "ResourceType": "volume",
+       "Tags": [
+        {
+         "Key": "Name",
+         "Value": "DockerStack/DockerManagerAsg/LaunchTemplate"
+        }
+       ]
+      }
+     ],
+     "UserData": {
+      "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nTOKEN=$(curl -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\")\nPRIVATE_IP=$(curl -H \"X-aws-ec2-metadata-token: $TOKEN\" http://169.254.169.254/latest/meta-data/local-ipv4)\nif aws ssm put-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/bootstrap-manager-ip\" --type String --value \"$PRIVATE_IP\" --no-overwrite; then\n  docker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || docker swarm init --advertise-addr \"$PRIVATE_IP\"\n  MANAGER_TOKEN=$(docker swarm join-token manager -q)\n  WORKER_TOKEN=$(docker swarm join-token worker -q)\n  aws ssm put-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/manager-join-command\" --type SecureString --overwrite --value \"docker swarm join --token $MANAGER_TOKEN $PRIVATE_IP:2377\"\n  aws ssm put-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/worker-join-command\" --type SecureString --overwrite --value \"docker swarm join --token $WORKER_TOKEN $PRIVATE_IP:2377\"\nelse\n  for i in $(seq 1 60); do MANAGER_JOIN_COMMAND=$(aws ssm get-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/manager-join-command\" --with-decryption --query Parameter.Value --output text 2>/dev/null) && break; sleep 10; done\n  test -n \"${MANAGER_JOIN_COMMAND:-}\"\n  docker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || $MANAGER_JOIN_COMMAND\nfi"
+     }
     },
-    "ImageId": "ami-00bc7c3b699c3b815",
-    "InstanceType": "c7i-flex.large",
-    "KeyName": {
-     "Ref": "DockerSshKeyPair184B4ED0"
-    },
-    "SecurityGroupIds": [
+    "TagSpecifications": [
      {
-      "Fn::GetAtt": [
-       "DockerManagerSg3C291827",
-       "GroupId"
+      "ResourceType": "launch-template",
+      "Tags": [
+       {
+        "Key": "Name",
+        "Value": "DockerStack/DockerManagerAsg/LaunchTemplate"
+       }
       ]
      }
-    ],
-    "SubnetId": "subnet-0b77ebf87a51fd6ba",
+    ]
+   },
+   "DependsOn": [
+    "DockerInstanceRoleDefaultPolicy87CEE1EF",
+    "DockerInstanceRole50102B31",
+    "DockerSshKeyPair184B4ED0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerManagerAsg/LaunchTemplate/Resource"
+   }
+  },
+  "DockerManagerAsgASGC694C08D": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "DesiredCapacity": "2",
+    "LaunchTemplate": {
+     "LaunchTemplateId": {
+      "Ref": "DockerManagerAsgLaunchTemplateF43E2C27"
+     },
+     "Version": {
+      "Fn::GetAtt": [
+       "DockerManagerAsgLaunchTemplateF43E2C27",
+       "LatestVersionNumber"
+      ]
+     }
+    },
+    "MaxSize": "2",
+    "MinSize": "2",
     "Tags": [
      {
       "Key": "Name",
+      "PropagateAtLaunch": true,
       "Value": "docker-swarm-manager"
      }
     ],
-    "UserData": {
-     "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nTOKEN=$(curl -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\")\nPRIVATE_IP=$(curl -H \"X-aws-ec2-metadata-token: $TOKEN\" http://169.254.169.254/latest/meta-data/local-ipv4)\ndocker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || docker swarm init --advertise-addr \"$PRIVATE_IP\"\nJOIN_TOKEN=$(docker swarm join-token worker -q)\naws ssm put-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/worker-join-command\" --type SecureString --overwrite --value \"docker swarm join --token $JOIN_TOKEN $PRIVATE_IP:2377\""
-    }
+    "VPCZoneIdentifier": [
+     "subnet-0b77ebf87a51fd6ba"
+    ]
    },
    "DependsOn": [
-    "DockerInstanceRoleDefaultPolicy87CEE1EF",
-    "DockerInstanceRole50102B31",
     "DockerSshKeyPair184B4ED0"
    ],
+   "UpdatePolicy": {
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerManager/Resource"
+    "aws:cdk:path": "DockerStack/DockerManagerAsg/ASG"
    }
   },
-  "DockerWorkerInstanceProfile7E9ABC87": {
+  "DockerWorkerAsgInstanceProfileAEDCA9DC": {
    "Type": "AWS::IAM::InstanceProfile",
    "Properties": {
     "Roles": [
@@ -499,60 +1043,138 @@
     ]
    },
    "DependsOn": [
-    "DockerManagerInstanceProfile40043755",
-    "DockerManager91866607",
+    "DockerManagerAsgASGC694C08D",
+    "DockerManagerAsgInstanceProfileC970F78F",
+    "DockerManagerAsgLaunchTemplateF43E2C27",
     "DockerSshKeyPair184B4ED0"
    ],
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerWorker/InstanceProfile"
+    "aws:cdk:path": "DockerStack/DockerWorkerAsg/InstanceProfile"
    }
   },
-  "DockerWorker5D484657": {
-   "Type": "AWS::EC2::Instance",
+  "DockerWorkerAsgLaunchTemplateA857EE4D": {
+   "Type": "AWS::EC2::LaunchTemplate",
    "Properties": {
-    "AvailabilityZone": "ap-southeast-2a",
-    "IamInstanceProfile": {
-     "Ref": "DockerWorkerInstanceProfile7E9ABC87"
+    "LaunchTemplateData": {
+     "IamInstanceProfile": {
+      "Arn": {
+       "Fn::GetAtt": [
+        "DockerWorkerAsgInstanceProfileAEDCA9DC",
+        "Arn"
+       ]
+      }
+     },
+     "ImageId": "ami-0df089799295556f3",
+     "InstanceType": "c7i-flex.large",
+     "KeyName": {
+      "Ref": "DockerSshKeyPair184B4ED0"
+     },
+     "Monitoring": {
+      "Enabled": false
+     },
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "DockerWorkerSgB39708A9",
+        "GroupId"
+       ]
+      }
+     ],
+     "TagSpecifications": [
+      {
+       "ResourceType": "instance",
+       "Tags": [
+        {
+         "Key": "Name",
+         "Value": "DockerStack/DockerWorkerAsg/LaunchTemplate"
+        }
+       ]
+      },
+      {
+       "ResourceType": "volume",
+       "Tags": [
+        {
+         "Key": "Name",
+         "Value": "DockerStack/DockerWorkerAsg/LaunchTemplate"
+        }
+       ]
+      }
+     ],
+     "UserData": {
+      "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nfor i in $(seq 1 60); do JOIN_COMMAND=$(aws ssm get-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/worker-join-command\" --with-decryption --query Parameter.Value --output text 2>/dev/null) && break; sleep 10; done\ntest -n \"${JOIN_COMMAND:-}\"\ndocker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || $JOIN_COMMAND"
+     }
     },
-    "ImageId": "ami-00bc7c3b699c3b815",
-    "InstanceType": "c7i-flex.large",
-    "KeyName": {
-     "Ref": "DockerSshKeyPair184B4ED0"
-    },
-    "SecurityGroupIds": [
+    "TagSpecifications": [
      {
-      "Fn::GetAtt": [
-       "DockerWorkerSgB39708A9",
-       "GroupId"
+      "ResourceType": "launch-template",
+      "Tags": [
+       {
+        "Key": "Name",
+        "Value": "DockerStack/DockerWorkerAsg/LaunchTemplate"
+       }
       ]
      }
-    ],
-    "SubnetId": "subnet-0b77ebf87a51fd6ba",
-    "Tags": [
-     {
-      "Key": "Name",
-      "Value": "docker-swarm-worker"
-     }
-    ],
-    "UserData": {
-     "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nfor i in $(seq 1 60); do JOIN_COMMAND=$(aws ssm get-parameter --region ap-southeast-2 --name \"/docker-swarm/DockerStack/worker-join-command\" --with-decryption --query Parameter.Value --output text 2>/dev/null) && break; sleep 10; done\ntest -n \"${JOIN_COMMAND:-}\"\ndocker info --format \"{{.Swarm.LocalNodeState}}\" | grep -q \"^active$\" || $JOIN_COMMAND"
-    }
+    ]
    },
    "DependsOn": [
     "DockerInstanceRoleDefaultPolicy87CEE1EF",
     "DockerInstanceRole50102B31",
-    "DockerManagerInstanceProfile40043755",
-    "DockerManager91866607",
+    "DockerManagerAsgASGC694C08D",
+    "DockerManagerAsgInstanceProfileC970F78F",
+    "DockerManagerAsgLaunchTemplateF43E2C27",
     "DockerSshKeyPair184B4ED0"
    ],
    "Metadata": {
-    "aws:cdk:path": "DockerStack/DockerWorker/Resource"
+    "aws:cdk:path": "DockerStack/DockerWorkerAsg/LaunchTemplate/Resource"
+   }
+  },
+  "DockerWorkerAsgASGE1A07689": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "DesiredCapacity": "2",
+    "LaunchTemplate": {
+     "LaunchTemplateId": {
+      "Ref": "DockerWorkerAsgLaunchTemplateA857EE4D"
+     },
+     "Version": {
+      "Fn::GetAtt": [
+       "DockerWorkerAsgLaunchTemplateA857EE4D",
+       "LatestVersionNumber"
+      ]
+     }
+    },
+    "MaxSize": "2",
+    "MinSize": "2",
+    "Tags": [
+     {
+      "Key": "Name",
+      "PropagateAtLaunch": true,
+      "Value": "docker-swarm-worker"
+     }
+    ],
+    "VPCZoneIdentifier": [
+     "subnet-0b77ebf87a51fd6ba"
+    ]
+   },
+   "DependsOn": [
+    "DockerManagerAsgASGC694C08D",
+    "DockerManagerAsgInstanceProfileC970F78F",
+    "DockerManagerAsgLaunchTemplateF43E2C27",
+    "DockerSshKeyPair184B4ED0"
+   ],
+   "UpdatePolicy": {
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "DockerStack/DockerWorkerAsg/ASG"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+1VTYvbMBD9LatjUdxt6ELJzV2WYgrd4ORmlqJIk6w28sjVR4IR/u9Fsp14m+2thy7kYCy9p3nz4dF4ns3vvmS3N+xoZ1zsZ0pusrByjO9pCVZ7w6EiHwh943mi7Gh/BuDzLNxvsdTewZptFND7La78BsGdsdxazSVzUiNdAfdGuvab0b6pAjk0nCySqJ0yP1gNAy7AciObaD0gTCl9zJV69G6jPQqycMYDJULa6K5AJRFKr8D2TEcDYUIUuDNgbSTIogqEMzwfHTW4RgQendnBm0f5y0Mh0rajoUv5XzX/vea1F66a70rzKU27aa9eAA/J3wU8xEG/Q7tk0lSh1xq2tEDrGHKoApHDcnILzvfk0PB+2FqyCMSOy6rP+GS7bpvRtmb8WSIUNdvBW5dtwIxWI73vYxpT/88CSmUby9VRyeoslFrFyjFrfQ3iaxtDaYxELhumcs61RzeOj3QmGuT8NFW6GBWyHYilVpLLODuq8AprczOcHTtrrXsiHp2Co98L1jnGn/vmO3GnTv0rmfKN8dIeTz/o0WCty1SmP3QuYSFWjjmoAdPXiSEl4V5zWtKl0VupoOsi+Ohd411HUQvIXuzHw/xz9ukuu715sVLOjEcna8jK/v0bAx/Wll4IAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+1YWY/bNhD+LdFjwVWTTQMUftMeDYwkXcM28iIYizE51jKmSJWHt66g/16QEmX56KZNgDQb+MGQ+c1obs6Qukwv3/yavnwBj+aCsvWF4Mu0nlmgazJFo5ymmCc/JeTEb0Hg0dzXSC/Teiwt6hVQ/FjRW8kqxaXN62RT0WQU2A3qDaeYjOpEQokdWilt41/NN2DxRpobXIETNhlZ7bAhiXFLidb4V/u/3qaFpyF1mtvtW61cFfGhsFsJS4EsCjub9C9MWpDrlfw4uY6J9MupchbnnsuvZkHDDsuMUZSD5UqS2VDZQQ0MKL/v/GNoqOaVf7tDQAj1mAlx5+xSOdkZRhLGjVc3loJLnDqBZhdFYGwsC43GeEIyyuuEgtyxRhlUSYnUKzOdNif5Hw7HLCwbUjekjdtZ5lnm9y3zvLfOMp+bzP+tZr2kp3z7HP3rfCcrEAafp+RwINib60fAbdB6BHfWkHe4nQDXed3K6pbkPThJH+ZYVgIs5nVSAn3gEsclFLEauDQWJMX5ttoViAUukH1QkluluSySUTD1oKaibwb1DViIxdQdVnDiloLTcZUx5o2MVVkpe1cNY7MUiq5v0J/MzIFRE61WXES71q1bMYY/kjchbfvpaoiAcskgrWdcFgKtkr85GaoqrxPnOOsEtWwTpytlovASS6W3M/5XBCwvUbl4ztWqN0OoYuj+qlMx6Be7jrKp6CwefgNAFYtcDyCZQB0VOOk19qkCxj6gBRYCG1qB3ymL06TYIn54HxdkkNHvyp1Qj9G4hnAo03qiBKfbvE6MBYslyk5m5+BsgPpG9BRsLdCHuZqqOBmegr+pujCl/qOBp9SGALYRI549r30rcSWyq62/RFaaS8orEBmlysmY5ZbHv5DRfkA3JClBQoEsCOQYlOxh20x3vAND28HU0o+8+CfiNzSSsbnqDaiHYNR7RP0yvxbtFbu9XI/3u3FDzOt7MAatSTP/IOZ1euXoGu0VGGzv8kIVJq3fd/sur/st2O+5roN3cEPAWWUoCC6LtM6cVbN2cXxtH+7QEx8XTky0E3Pv1CQbdIzhrDkacSWX11AB5XbbK/jzAGFouEa2h+6fNp+vGyFzhylqGkKdsaq81913OpNmj+Y6YPHTHdlf9o09lFvkCUU1s1BwWXjCnbOVsw2RimH6yfy8ufwlffUmffnik+H8ouvC6bR9/g0PpXbLQBQAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "DockerStack/CDKMetadata/Default"
@@ -560,22 +1182,16 @@
   }
  },
  "Outputs": {
-  "DockerManagerPrivateIp": {
-   "Description": "Docker Swarm Manager private IP",
+  "DockerManagerAsgName": {
+   "Description": "Docker Swarm manager Auto Scaling Group name",
    "Value": {
-    "Fn::GetAtt": [
-     "DockerManager91866607",
-     "PrivateIp"
-    ]
+    "Ref": "DockerManagerAsgASGC694C08D"
    }
   },
-  "DockerWorkerPrivateIp": {
-   "Description": "Docker Swarm Worker private IP",
+  "DockerWorkerAsgName": {
+   "Description": "Docker Swarm worker Auto Scaling Group name",
    "Value": {
-    "Fn::GetAtt": [
-     "DockerWorker5D484657",
-     "PrivateIp"
-    ]
+    "Ref": "DockerWorkerAsgASGE1A07689"
    }
   },
   "DockerSshKeyPairName": {
@@ -587,6 +1203,10 @@
   "DockerWorkerJoinCommandParameterName": {
    "Description": "SSM SecureString parameter containing the Docker Swarm worker join command",
    "Value": "/docker-swarm/DockerStack/worker-join-command"
+  },
+  "DockerManagerJoinCommandParameterName": {
+   "Description": "SSM SecureString parameter containing the Docker Swarm manager join command",
+   "Value": "/docker-swarm/DockerStack/manager-join-command"
   }
  },
  "Parameters": {

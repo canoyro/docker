@@ -22,7 +22,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:28:24)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:33:24)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -36,7 +36,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:38:5)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:43:5)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -57,6 +57,62 @@
         "description": "*",
         "allowAllOutbound": true,
         "disableInlineRules": true
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*"
+        ]
       }
     },
     {
@@ -240,6 +296,116 @@
       }
     }
   ],
+  "/DockerStack/DockerVpcEndpointSg": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "vpc": "*",
+        "securityGroupName": "*",
+        "description": "*",
+        "allowAllOutbound": true,
+        "disableInlineRules": true
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          "*",
+          {},
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          "*",
+          {},
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*",
+          false
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*",
+          false
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addIngressRule": [
+          {
+            "canInlineRule": true,
+            "connections": "*",
+            "uniqueId": "*"
+          },
+          {},
+          "*",
+          false
+        ]
+      }
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "memorySize": "*",
+        "timeout": "*",
+        "role": "*",
+        "logGroup": "*",
+        "functionName": "*",
+        "vpc": "*",
+        "vpcSubnets": "*",
+        "code": "*",
+        "handler": "*",
+        "runtime": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:is-custom-resource-handler-singleton",
+      "data": true
+    },
+    {
+      "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+      "data": 0
+    },
+    {
+      "type": "aws:cdk:is-custom-resource-handler-singleton",
+      "data": true
+    },
+    {
+      "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+      "data": 0
+    }
+  ],
   "/DockerStack/DockerInstanceRole": [
     {
       "type": "aws:cdk:analytics:construct",
@@ -294,11 +460,10 @@
       "data": {}
     }
   ],
-  "/DockerStack/DockerManager": [
+  "/DockerStack/DockerManagerAsg": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
-        "instanceName": "*",
         "vpc": "*",
         "vpcSubnets": {
           "subnets": [
@@ -309,15 +474,50 @@
         "machineImage": "*",
         "securityGroup": "*",
         "role": "*",
-        "keyPair": "*"
+        "keyPair": "*",
+        "userData": "*",
+        "minCapacity": "*",
+        "maxCapacity": "*",
+        "desiredCapacity": "*"
       }
+    },
+    {
+      "type": "aws:cdk:warning",
+      "data": "desiredCapacity has been configured. Be aware this will reset the size of your AutoScalingGroup on every deployment. See https://github.com/aws/aws-cdk/issues/5215 [ack: @aws-cdk/aws-autoscaling:desiredCapacitySet]",
+      "trace": [
+        "Annotations.addMessage (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:3441)",
+        "Annotations.addWarningV2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2129)",
+        "new AutoScalingGroup2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\aws-autoscaling\\lib\\auto-scaling-group.js:1:27998)",
+        "new AutoScalingGroup2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\no-box-stack-traces.js:1:345)",
+        "new AutoScalingGroup2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:855)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:228:30)",
+        "Object.<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "Module._compile (node:internal/modules/cjs/loader:1830:14)",
+        "Module.m._compile (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+        "node:internal/modules/cjs/loader:1961:10",
+        "Object.require.extensions.<computed> [as .ts] (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+        "Module.load (node:internal/modules/cjs/loader:1553:32)",
+        "Module._load (node:internal/modules/cjs/loader:1355:12)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+        "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+        "phase4 (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+        "bootstrap (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+        "main (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+        "Object.<anonymous> (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+        "Module._compile (node:internal/modules/cjs/loader:1830:14)",
+        "Object.<anonymous> (node:internal/modules/cjs/loader:1961:10)",
+        "Module.load (node:internal/modules/cjs/loader:1553:32)",
+        "Module._load (node:internal/modules/cjs/loader:1355:12)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+        "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+        "node:internal/main/run_main_module:33:47"
+      ]
     }
   ],
-  "/DockerStack/DockerWorker": [
+  "/DockerStack/DockerWorkerAsg": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
-        "instanceName": "*",
         "vpc": "*",
         "vpcSubnets": {
           "subnets": [
@@ -328,33 +528,69 @@
         "machineImage": "*",
         "securityGroup": "*",
         "role": "*",
-        "keyPair": "*"
+        "keyPair": "*",
+        "userData": "*",
+        "minCapacity": "*",
+        "maxCapacity": "*",
+        "desiredCapacity": "*"
       }
+    },
+    {
+      "type": "aws:cdk:warning",
+      "data": "desiredCapacity has been configured. Be aware this will reset the size of your AutoScalingGroup on every deployment. See https://github.com/aws/aws-cdk/issues/5215 [ack: @aws-cdk/aws-autoscaling:desiredCapacitySet]",
+      "trace": [
+        "Annotations.addMessage (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:3441)",
+        "Annotations.addWarningV2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2129)",
+        "new AutoScalingGroup2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\aws-autoscaling\\lib\\auto-scaling-group.js:1:27998)",
+        "new AutoScalingGroup2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\no-box-stack-traces.js:1:345)",
+        "new AutoScalingGroup2 (C:\\Users\\rbnca\\github\\docker\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:855)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:252:29)",
+        "Object.<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "Module._compile (node:internal/modules/cjs/loader:1830:14)",
+        "Module.m._compile (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+        "node:internal/modules/cjs/loader:1961:10",
+        "Object.require.extensions.<computed> [as .ts] (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+        "Module.load (node:internal/modules/cjs/loader:1553:32)",
+        "Module._load (node:internal/modules/cjs/loader:1355:12)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+        "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+        "phase4 (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+        "bootstrap (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+        "main (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+        "Object.<anonymous> (C:\\Users\\rbnca\\github\\docker\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+        "Module._compile (node:internal/modules/cjs/loader:1830:14)",
+        "Object.<anonymous> (node:internal/modules/cjs/loader:1961:10)",
+        "Module.load (node:internal/modules/cjs/loader:1553:32)",
+        "Module._load (node:internal/modules/cjs/loader:1355:12)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+        "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+        "node:internal/main/run_main_module:33:47"
+      ]
     }
   ],
-  "/DockerStack/DockerManagerPrivateIp": [
+  "/DockerStack/DockerManagerAsgName": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "DockerManagerPrivateIp"
+      "data": "DockerManagerAsgName"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:156:5)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:269:5)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }
   ],
-  "/DockerStack/DockerWorkerPrivateIp": [
+  "/DockerStack/DockerWorkerAsgName": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "DockerWorkerPrivateIp"
+      "data": "DockerWorkerAsgName"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:161:5)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:274:5)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -368,7 +604,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:166:5)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:279:5)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -382,7 +618,21 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:171:5)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:284:5)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerJoinCommandParameterName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerJoinCommandParameterName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:289:5)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -438,6 +688,72 @@
       "data": "*"
     }
   ],
+  "/DockerStack/DockerVpc/DockerSsmEndpoint": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "vpc": "*",
+        "service": {
+          "name": "*",
+          "port": "*",
+          "privateDnsDefault": true
+        },
+        "subnets": {
+          "subnets": [
+            "*"
+          ]
+        },
+        "securityGroups": [
+          "*"
+        ],
+        "privateDnsEnabled": true
+      }
+    }
+  ],
+  "/DockerStack/DockerVpc/DockerEc2MessagesEndpoint": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "vpc": "*",
+        "service": {
+          "name": "*",
+          "port": "*",
+          "privateDnsDefault": true
+        },
+        "subnets": {
+          "subnets": [
+            "*"
+          ]
+        },
+        "securityGroups": [
+          "*"
+        ],
+        "privateDnsEnabled": true
+      }
+    }
+  ],
+  "/DockerStack/DockerVpc/DockerSsmMessagesEndpoint": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "vpc": "*",
+        "service": {
+          "name": "*",
+          "port": "*",
+          "privateDnsDefault": true
+        },
+        "subnets": {
+          "subnets": [
+            "*"
+          ]
+        },
+        "securityGroups": [
+          "*"
+        ],
+        "privateDnsEnabled": true
+      }
+    }
+  ],
   "/DockerStack/DockerManagerSg/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -447,7 +763,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:51:23)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:56:23)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -462,7 +778,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:51:23)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:56:23)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node..."
       ]
@@ -477,7 +793,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:69:15)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:74:15)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -492,52 +808,112 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:71:15)",
-        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
-        "...node internals, ts-node, ts-node..."
-      ]
-    }
-  ],
-  "/DockerStack/DockerManagerSg/from '{IndirectPeer2}':7946": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "DockerManagerSgfromIndirectPeer27946CD201FC0"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:73:15)",
-        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
-        "...node internals, ts-node, ts-node..."
-      ]
-    }
-  ],
-  "/DockerStack/DockerManagerSg/from '{IndirectPeer3}':UDP 7946": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "DockerManagerSgfromIndirectPeer3UDP7946A523F77D"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:74:15)",
-        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
-        "...node internals, ts-node, ts-node..."
-      ]
-    }
-  ],
-  "/DockerStack/DockerManagerSg/from '{IndirectPeer4}':UDP 4789": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "DockerManagerSgfromIndirectPeer4UDP4789EAD4072F"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...WrappedClass.<anonymous> in aws-cdk-lib...",
         "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:76:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer2}':2377": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer2237764CDCE5E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:78:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer3}':7946": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer379465E2DCEA2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:79:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer4}':UDP 7946": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer4UDP79469683741F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:80:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer5}':UDP 4789": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer5UDP4789852C10DF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:81:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer6}':7946": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer6794614798687"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:83:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer7}':UDP 7946": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer7UDP79464664A802"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:84:15)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerSg/from '{IndirectPeer8}':UDP 4789": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerSgfromIndirectPeer8UDP4789568E3E7B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:86:15)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -552,7 +928,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:60:22)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:65:22)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -567,7 +943,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:60:22)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:65:22)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node..."
       ]
@@ -582,7 +958,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:79:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:89:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -597,7 +973,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:81:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:91:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -612,7 +988,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:82:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:92:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -627,7 +1003,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:84:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:94:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -642,7 +1018,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:86:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:96:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -657,7 +1033,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:87:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:97:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -672,10 +1048,303 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:88:14)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:98:14)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
+    }
+  ],
+  "/DockerStack/DockerVpcEndpointSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcEndpointSg089DC24A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:100:24)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerVpcEndpointSg/to 0.0.0.0_0:ALL TRAFFIC": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcEndpointSgto00000ALLTRAFFICA0C76ED6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:100:24)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerVpcEndpointSg/from DockerStackDockerManagerSg75443DCA:443": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcEndpointSgfromDockerStackDockerManagerSg75443DCA4432D0FA395"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:107:16)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerVpcEndpointSg/from DockerStackDockerWorkerSg467302DE:443": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcEndpointSgfromDockerStackDockerWorkerSg467302DE443C6D5A197"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:108:16)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerVpcEndpointSg/from 10.0.0.0_16:443": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcEndpointSgfrom1000016443304D9375"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsSupport/Provider": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "uuid": "*",
+        "lambdaPurpose": "*",
+        "memorySize": "*",
+        "timeout": "*",
+        "role": "*",
+        "logGroup": "*",
+        "functionName": "*",
+        "vpc": "*",
+        "vpcSubnets": "*",
+        "code": "*",
+        "handler": "*",
+        "runtime": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addMetadata": [
+          "*",
+          true
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addMetadata": [
+          "*",
+          "*"
+        ]
+      }
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsSupport/Resource": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsSupport/CustomResourcePolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "statements": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        },
+        "managedPolicies": [
+          {
+            "managedPolicyArn": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AwsCustomResource2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:110:33)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)"
+      ]
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287/LogGroup": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "logGroupName": "*"
+      }
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsHostnames/Provider": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "uuid": "*",
+        "lambdaPurpose": "*",
+        "memorySize": "*",
+        "timeout": "*",
+        "role": "*",
+        "logGroup": "*",
+        "functionName": "*",
+        "vpc": "*",
+        "vpcSubnets": "*",
+        "code": "*",
+        "handler": "*",
+        "runtime": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addMetadata": [
+          "*",
+          true
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addMetadata": [
+          "*",
+          "*"
+        ]
+      }
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsHostnames/Resource": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsHostnames/CustomResourcePolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "statements": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
     }
   ],
   "/DockerStack/DockerInstanceRole/Resource": [
@@ -687,7 +1356,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Role2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:90:26)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:183:26)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -732,67 +1401,101 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new KeyPair2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:111:24)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:204:24)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }
   ],
-  "/DockerStack/DockerManager/InstanceProfile": [
+  "/DockerStack/DockerManagerAsg/InstanceProfile": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "DockerManagerInstanceProfile40043755"
+      "data": "DockerManagerAsgInstanceProfileC970F78F"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "...new Instance2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:117:27)",
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:228:30)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }
   ],
-  "/DockerStack/DockerManager/Resource": [
+  "/DockerStack/DockerManagerAsg/LaunchTemplate": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "machineImage": "*",
+        "instanceType": "*",
+        "detailedMonitoring": false,
+        "securityGroup": "*",
+        "userData": "*",
+        "associatePublicIpAddress": "*",
+        "spotOptions": "*",
+        "blockDevices": "*",
+        "instanceProfile": "*",
+        "keyPair": "*"
+      }
+    }
+  ],
+  "/DockerStack/DockerManagerAsg/ASG": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "DockerManager91866607"
+      "data": "DockerManagerAsgASGC694C08D"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "...new Instance2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:117:27)",
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:228:30)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }
   ],
-  "/DockerStack/DockerWorker/InstanceProfile": [
+  "/DockerStack/DockerWorkerAsg/InstanceProfile": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "DockerWorkerInstanceProfile7E9ABC87"
+      "data": "DockerWorkerAsgInstanceProfileAEDCA9DC"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "...new Instance2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:137:26)",
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:252:29)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }
   ],
-  "/DockerStack/DockerWorker/Resource": [
+  "/DockerStack/DockerWorkerAsg/LaunchTemplate": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "machineImage": "*",
+        "instanceType": "*",
+        "detailedMonitoring": false,
+        "securityGroup": "*",
+        "userData": "*",
+        "associatePublicIpAddress": "*",
+        "spotOptions": "*",
+        "blockDevices": "*",
+        "instanceProfile": "*",
+        "keyPair": "*"
+      }
+    }
+  ],
+  "/DockerStack/DockerWorkerAsg/ASG": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "DockerWorker5D484657"
+      "data": "DockerWorkerAsgASGE1A07689"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "...new Instance2 in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:137:26)",
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:252:29)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -811,6 +1514,143 @@
       ]
     }
   ],
+  "/DockerStack/DockerVpc/DockerSsmEndpoint/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcDockerSsmEndpointC9E17E2D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addInterfaceEndpoint in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:157:29)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerVpc/DockerEc2MessagesEndpoint/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcDockerEc2MessagesEndpointF0186251"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addInterfaceEndpoint in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:164:37)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerVpc/DockerSsmMessagesEndpoint/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerVpcDockerSsmMessagesEndpoint73900AAE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addInterfaceEndpoint in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:171:37)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsSupport/Resource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EnableDockerVpcDnsSupport86A69C18"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AwsCustomResource2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:110:33)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsSupport/CustomResourcePolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EnableDockerVpcDnsSupportCustomResourcePolicy94DCCF72"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AwsCustomResource2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:110:33)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287/Code/AssetBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/DockerStack/AWS679f53fac002430cb0da5b7982bd2287/LogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AWS679f53fac002430cb0da5b7982bd2287LogGroup449FB7C2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsHostnames/Resource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EnableDockerVpcDnsHostnames66686B09"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AwsCustomResource2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:133:35)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/EnableDockerVpcDnsHostnames/CustomResourcePolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EnableDockerVpcDnsHostnamesCustomResourcePolicy984BDF78"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AwsCustomResource2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:133:35)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
   "/DockerStack/DockerInstanceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -820,9 +1660,39 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:96:18)",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:189:18)",
         "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
         "...node internals..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerManagerAsg/LaunchTemplate/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerManagerAsgLaunchTemplateF43E2C27"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:228:30)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/DockerStack/DockerWorkerAsg/LaunchTemplate/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DockerWorkerAsgLaunchTemplateA857EE4D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new DockerStack (C:\\Users\\rbnca\\github\\docker\\lib\\docker-proj-stack.ts:252:29)",
+        "<anonymous> (C:\\Users\\rbnca\\github\\docker\\bin\\docker-proj.ts:6:1)",
+        "...node internals, ts-node..."
       ]
     }
   ]

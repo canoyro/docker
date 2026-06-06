@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  simple-api:
+    image: hashicorp/http-echo:1.0
+    command:
+      - "-listen=:8080"
+      - "-text={\"status\":\"ok\",\"service\":\"simple-api\"}"
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: ingress
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+      update_config:
+        parallelism: 1
+        order: start-first
