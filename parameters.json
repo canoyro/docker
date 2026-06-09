@@ -2,6 +2,6 @@
   "vpcId": "vpc-04571bb185086fe7f",
   "subnetId": "subnet-0b77ebf87a51fd6ba",
   "availabilityZone": "ap-southeast-2a",
-  "amiId": "ami-0c3efdf2221d2eb48",
+  "amiId": "ami-0f2281998fa47ead6",
   "instanceType": "t3.micro"
 }

@@ -10,7 +10,7 @@ After=network.target
 
 [Service]
 Type=forking
-ExecStart=/usr/bin/mount-s3 __S3_BUCKET_NAME__ /mnt/s3-shared --cache /tmp/s3-cache --maximum-cache-size 1GiB --allow-other
+ExecStart=/usr/bin/mount-s3 __S3_BUCKET_NAME__ /mnt/s3-shared --cache /tmp/s3-cache --max-cache-size 1024 --allow-other
 Restart=on-failure
 RestartSec=5
 
