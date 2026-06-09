@@ -5,6 +5,9 @@ for i in $(seq 1 30); do
   sleep 5
 done
 systemctl is-active --quiet docker
+apt-get install -y amazon-ecr-credential-helper
+mkdir -p /root/.docker
+echo '{"credsStore":"ecr-login"}' > /root/.docker/config.json
 TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
 publish_swarm_params() {

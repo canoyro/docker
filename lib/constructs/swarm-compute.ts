@@ -217,7 +217,7 @@ export class SwarmCompute extends Construct {
       minCapacity: 1,
       maxCapacity: 1,
       healthChecks: autoscaling.HealthChecks.ec2({ gracePeriod: cdk.Duration.minutes(5) }),
-      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 2, waitOnResourceSignals: false }),
+      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 0, waitOnResourceSignals: false }),
     });
     managerAsg.node.addDependency(sshKeyPair);
     managerAsg.scaleOnCpuUtilization('DockerManagerCpuScaling', { targetUtilizationPercent: 60, cooldown: cdk.Duration.minutes(5) });

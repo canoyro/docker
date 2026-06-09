@@ -5,6 +5,9 @@ for i in $(seq 1 30); do
   sleep 5
 done
 systemctl is-active --quiet docker
+apt-get install -y amazon-ecr-credential-helper
+mkdir -p /root/.docker
+echo '{"credsStore":"ecr-login"}' > /root/.docker/config.json
 for i in $(seq 1 60); do
   JOIN_COMMAND=$(aws ssm get-parameter --region __REGION__ --name "__WORKER_JOIN_COMMAND_PARAM__" --with-decryption --query Parameter.Value --output text 2>/dev/null) && break
   sleep 10
