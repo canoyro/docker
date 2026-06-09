@@ -44,34 +44,52 @@ export class SwarmCompute extends Construct {
     });
     this.sharedStorageBucketName = bucket.bucketName;
 
-    const instanceRole = new iam.Role(this, 'DockerInstanceRole', {
+    const ssmParamArn = cdk.Stack.of(this).formatArn({ service: 'ssm', resource: 'parameter', resourceName: `docker-swarm/${stackName}/*` });
+    const ecrRepoArn = cdk.Stack.of(this).formatArn({ service: 'ecr', resource: 'repository', resourceName: '*' });
+    const ssmCore = iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore');
+
+    const addSharedPolicies = (role: iam.Role) => {
+      role.addToPolicy(new iam.PolicyStatement({
+        actions: ['ecr:GetAuthorizationToken'],
+        resources: ['*'],
+      }));
+      role.addToPolicy(new iam.PolicyStatement({
+        actions: ['ecr:BatchCheckLayerAvailability', 'ecr:BatchGetImage', 'ecr:GetDownloadUrlForLayer'],
+        resources: [ecrRepoArn],
+      }));
+      role.addToPolicy(new iam.PolicyStatement({
+        actions: ['autoscaling:SetInstanceHealth'],
+        resources: ['*'],
+      }));
+      role.addToPolicy(new iam.PolicyStatement({
+        actions: ['s3:ListBucket'],
+        resources: [bucket.bucketArn],
+      }));
+      role.addToPolicy(new iam.PolicyStatement({
+        actions: ['s3:GetObject', 's3:PutObject', 's3:DeleteObject', 's3:HeadObject'],
+        resources: [`${bucket.bucketArn}/*`],
+      }));
+    };
+
+    const managerRole = new iam.Role(this, 'DockerManagerRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore')],
+      managedPolicies: [ssmCore],
     });
-    instanceRole.addToPolicy(new iam.PolicyStatement({
+    managerRole.addToPolicy(new iam.PolicyStatement({
       actions: ['ssm:GetParameter', 'ssm:PutParameter'],
-      resources: [cdk.Stack.of(this).formatArn({ service: 'ssm', resource: 'parameter', resourceName: `docker-swarm/${stackName}/*` })],
+      resources: [ssmParamArn],
     }));
-    instanceRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['ecr:GetAuthorizationToken'],
-      resources: ['*'],
+    addSharedPolicies(managerRole);
+
+    const workerRole = new iam.Role(this, 'DockerWorkerRole', {
+      assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
+      managedPolicies: [ssmCore],
+    });
+    workerRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['ssm:GetParameter'],
+      resources: [ssmParamArn],
     }));
-    instanceRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['ecr:BatchCheckLayerAvailability', 'ecr:BatchGetImage', 'ecr:GetDownloadUrlForLayer'],
-      resources: [cdk.Stack.of(this).formatArn({ service: 'ecr', resource: 'repository', resourceName: '*' })],
-    }));
-    instanceRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['autoscaling:SetInstanceHealth'],
-      resources: ['*'],
-    }));
-    instanceRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['s3:ListBucket'],
-      resources: [bucket.bucketArn],
-    }));
-    instanceRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['s3:GetObject', 's3:PutObject', 's3:DeleteObject', 's3:HeadObject'],
-      resources: [`${bucket.bucketArn}/*`],
-    }));
+    addSharedPolicies(workerRole);
 
     const ami = ec2.MachineImage.genericLinux({ [region]: props.amiId });
     const instanceTypeObj = new ec2.InstanceType(props.instanceType);
@@ -105,6 +123,8 @@ export class SwarmCompute extends Construct {
       __MANAGER_JOIN_COMMAND_PARAM__: managerJoinCommandParam,
       __WORKER_JOIN_COMMAND_PARAM__: workerJoinCommandParam,
     };
+
+    const s3Subs = { __S3_BUCKET_NAME__: bucket.bucketName };
 
     const addSystemdScript = (
       userData: ec2.UserData,
@@ -149,6 +169,7 @@ export class SwarmCompute extends Construct {
     // Manager user data
     const managerUserData = ec2.UserData.forLinux();
     managerUserData.addCommands(loadScript('manager-init.sh', paramSubs));
+    managerUserData.addCommands(loadScript('s3-mount.sh', s3Subs));
     addSystemdScript(
       managerUserData,
       '/usr/local/bin/docker-manager-ssm-refresh.sh',
@@ -171,7 +192,8 @@ export class SwarmCompute extends Construct {
 
     // Worker user data
     const workerUserData = ec2.UserData.forLinux();
-    workerUserData.addCommands(loadScript('worker-init.sh', { ...paramSubs, __S3_BUCKET_NAME__: bucket.bucketName }));
+    workerUserData.addCommands(loadScript('worker-init.sh', paramSubs));
+    workerUserData.addCommands(loadScript('s3-mount.sh', s3Subs));
     addSystemdScript(
       workerUserData,
       '/usr/local/bin/docker-asg-healthcheck.sh',
@@ -188,11 +210,11 @@ export class SwarmCompute extends Construct {
       instanceType: instanceTypeObj,
       machineImage: ami,
       securityGroup: managerSg,
-      role: instanceRole,
+      role: managerRole,
       keyPair: sshKeyPair,
       userData: managerUserData,
-      minCapacity: 3,
-      maxCapacity: 4,
+      minCapacity: 1,
+      maxCapacity: 1,
       healthChecks: autoscaling.HealthChecks.ec2({ gracePeriod: cdk.Duration.minutes(5) }),
       updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 2, waitOnResourceSignals: false }),
     });
@@ -207,10 +229,10 @@ export class SwarmCompute extends Construct {
       instanceType: instanceTypeObj,
       machineImage: ami,
       securityGroup: workerSg,
-      role: instanceRole,
+      role: workerRole,
       keyPair: sshKeyPair,
       userData: workerUserData,
-      minCapacity: 2,
+      minCapacity: 1,
       maxCapacity: 4,
       healthChecks: autoscaling.HealthChecks.ec2({ gracePeriod: cdk.Duration.minutes(5) }),
       updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 1, waitOnResourceSignals: false }),

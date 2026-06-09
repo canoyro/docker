@@ -45,7 +45,6 @@ export class SwarmSecurityGroups extends Construct {
       [ec2.Port.udp(4789), 'Overlay network'],
     ];
 
-    this.managerSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), 'SSH');
     this.managerSg.addIngressRule(ec2.Peer.securityGroupId(this.workerSg.securityGroupId), ec2.Port.tcp(2377), 'Swarm join from workers');
     this.managerSg.addIngressRule(ec2.Peer.securityGroupId(this.managerSg.securityGroupId), ec2.Port.tcp(2377), 'Swarm manager join and control plane');
     for (const [port, label] of swarmPorts) {
@@ -53,7 +52,6 @@ export class SwarmSecurityGroups extends Construct {
       this.managerSg.addIngressRule(ec2.Peer.securityGroupId(this.workerSg.securityGroupId), port, `${label} from workers`);
     }
 
-    this.workerSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), 'SSH');
     for (const [port, label] of swarmPorts) {
       this.workerSg.addIngressRule(ec2.Peer.securityGroupId(this.managerSg.securityGroupId), port, `${label} from manager`);
       this.workerSg.addIngressRule(ec2.Peer.securityGroupId(this.workerSg.securityGroupId), port, `${label} between workers`);
