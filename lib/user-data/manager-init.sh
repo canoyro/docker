@@ -5,8 +5,7 @@ for i in $(seq 1 30); do
   sleep 5
 done
 systemctl is-active --quiet docker
-apt-get update -y
-apt-get install -y amazon-ecr-credential-helper
+command -v docker-credential-ecr-login >/dev/null 2>&1 || { echo "amazon-ecr-credential-helper not found — bake it into the AMI"; exit 1; }
 mkdir -p /root/.docker
 printf '{"credsStore":"ecr-login"}' > /root/.docker/config.json
 TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
