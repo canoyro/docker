@@ -111,6 +111,7 @@ export class SwarmCompute extends Construct {
 
     const loadScript = (filename: string, subs: Record<string, string> = {}): string => {
       let content = fs.readFileSync(path.join(__dirname, '../user-data', filename), 'utf-8');
+      content = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       for (const [placeholder, value] of Object.entries(subs)) {
         content = content.replace(new RegExp(placeholder, 'g'), value);
       }

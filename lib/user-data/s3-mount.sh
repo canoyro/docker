@@ -1,6 +1,13 @@
 #!/bin/bash
 set -euxo pipefail
-rpm -q mount-s3 2>/dev/null || yum install -y https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm
+if command -v mount-s3 >/dev/null 2>&1; then
+  : # already installed
+elif command -v apt-get >/dev/null 2>&1; then
+  curl -fsSL https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.deb -o /tmp/mount-s3.deb
+  apt-get install -y /tmp/mount-s3.deb
+else
+  yum install -y https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm
+fi
 mkdir -p /mnt/s3-shared /tmp/s3-cache
 cat > /etc/systemd/system/s3-mount.service <<'SVCEOF'
 [Unit]
