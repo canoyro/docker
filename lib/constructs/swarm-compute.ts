@@ -76,7 +76,7 @@ export class SwarmCompute extends Construct {
       managedPolicies: [ssmCore],
     });
     managerRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['ssm:GetParameter', 'ssm:PutParameter'],
+      actions: ['ssm:GetParameter', 'ssm:PutParameter', 'ssm:DeleteParameter'],
       resources: [ssmParamArn],
     }));
     addSharedPolicies(managerRole);
