@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
-rpm -q mount-s3 2>/dev/null || yum install -y https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm
+command -v mount-s3 >/dev/null 2>&1 || { echo "mount-s3 not found — bake it into the AMI"; exit 1; }
+grep -q 'user_allow_other' /etc/fuse.conf || echo 'user_allow_other' >> /etc/fuse.conf
 mkdir -p /mnt/s3-shared /tmp/s3-cache
 cat > /etc/systemd/system/s3-mount.service <<'SVCEOF'
 [Unit]

@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/docker-proj.ts",
+  "app": "npx tsx bin/docker-proj.ts",
   "watch": {
     "include": [
       "**"

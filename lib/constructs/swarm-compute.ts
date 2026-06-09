@@ -76,7 +76,7 @@ export class SwarmCompute extends Construct {
       managedPolicies: [ssmCore],
     });
     managerRole.addToPolicy(new iam.PolicyStatement({
-      actions: ['ssm:GetParameter', 'ssm:PutParameter'],
+      actions: ['ssm:GetParameter', 'ssm:PutParameter', 'ssm:DeleteParameter'],
       resources: [ssmParamArn],
     }));
     addSharedPolicies(managerRole);
@@ -111,6 +111,7 @@ export class SwarmCompute extends Construct {
 
     const loadScript = (filename: string, subs: Record<string, string> = {}): string => {
       let content = fs.readFileSync(path.join(__dirname, '../user-data', filename), 'utf-8');
+      content = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       for (const [placeholder, value] of Object.entries(subs)) {
         content = content.replace(new RegExp(placeholder, 'g'), value);
       }
@@ -216,7 +217,7 @@ export class SwarmCompute extends Construct {
       minCapacity: 1,
       maxCapacity: 1,
       healthChecks: autoscaling.HealthChecks.ec2({ gracePeriod: cdk.Duration.minutes(5) }),
-      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 2, waitOnResourceSignals: false }),
+      updatePolicy: autoscaling.UpdatePolicy.rollingUpdate({ maxBatchSize: 1, minInstancesInService: 0, waitOnResourceSignals: false }),
     });
     managerAsg.node.addDependency(sshKeyPair);
     managerAsg.scaleOnCpuUtilization('DockerManagerCpuScaling', { targetUtilizationPercent: 60, cooldown: cdk.Duration.minutes(5) });
