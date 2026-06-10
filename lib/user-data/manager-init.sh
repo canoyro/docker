@@ -28,6 +28,8 @@ else
   if [ -n "${MANAGER_JOIN_COMMAND:-}" ]; then
     docker info --format '{{.Swarm.LocalNodeState}}' | grep -q "^active$" || $MANAGER_JOIN_COMMAND || {
       aws ssm delete-parameter --region __REGION__ --name "__BOOTSTRAP_MANAGER_IP_PARAM__" 2>/dev/null || true
+      aws ssm delete-parameter --region __REGION__ --name "__MANAGER_JOIN_COMMAND_PARAM__" 2>/dev/null || true
+      aws ssm delete-parameter --region __REGION__ --name "__WORKER_JOIN_COMMAND_PARAM__" 2>/dev/null || true
       init_swarm
     }
   else
